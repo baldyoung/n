@@ -8,6 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/n/html" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/n/js" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

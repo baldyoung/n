@@ -4,13 +4,16 @@ import java.io.*;
 import java.util.*;
 
 /**
- * 文件数据操作
+ * 文件数据操作模块，
  */
-
 public class FileDataOptionModule implements Runnable{
-	static public enum ActionType{
+	/**
+	 * 数据写入文件时的方式（{COVER:覆盖原文件, APPEND:追加到原文件的尾部}）
+	 */
+	public enum ActionType{
 		COVER, APPEND
 	}
+	//
 	static private volatile Integer Number = 0;
 	private InputStream dataSource;
 	private String pathName;

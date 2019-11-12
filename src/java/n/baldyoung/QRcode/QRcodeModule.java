@@ -15,7 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 二维码生成模块
+ * 二维码生成模块  version 0.9
+ * 依赖：core.jar(测试版本3.4.0)
  * author:baldyoung
  */
 public class QRcodeModule {
@@ -58,7 +59,7 @@ public class QRcodeModule {
         return result;
     }
     /**
-     * 获取默认的二维码格式参数集（其包含这些内容：[{EncodeHintType.ERROR_CORRECTION:二维码的校错级别}, {EncodeHintType.CHARACTER_SET:编码格式}, {EncodeHintType:}
+     * 获取默认的二维码格式参数集（其包含这些内容：{EncodeHintType.ERROR_CORRECTION:二维码的校错级别, EncodeHintType.CHARACTER_SET:编码格式}）
      *
      * @return 返回一个包含默认键值对的map，其内包含了生成一个二维码所需要的必要格式参数及其默认值
      */

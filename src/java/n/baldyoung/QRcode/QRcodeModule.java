@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * 二维码生成模块  version 0.9
  * 依赖：core.jar(测试版本3.4.0)
- * author:baldyoung
+ * @author baldyoung
  */
 public class QRcodeModule {
     public static final String DEFAULT_CHARACTER_SET = "utf-8";

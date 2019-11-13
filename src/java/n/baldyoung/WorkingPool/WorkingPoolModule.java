@@ -1,6 +1,7 @@
 package n.baldyoung.WorkingPool;
 
-import n.baldyoung.FileDataOption.FileDataOptionModule;
+
+import n.baldyoung.FileDataOption.FileDataSaveModule;
 
 import java.util.concurrent.*;
 import java.util.List;
@@ -40,7 +41,7 @@ public class WorkingPoolModule{
 		}
 		return result;
 	}
-	public int submit(List<FileDataOptionModule> rList){
+	public int submit(List<FileDataSaveModule> rList){
 		int result = 0;
 		for(Runnable r : rList){
 			if(this.submit(r)) result++;

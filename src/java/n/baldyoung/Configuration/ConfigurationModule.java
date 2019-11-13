@@ -1,12 +1,11 @@
 package n.baldyoung.Configuration;
 import java.io.*;
 import java.util.Properties;
-/**
-配置单元的工厂类
 
-@author baldyoung
-@version V0.5
-*/
+/**
+ * 参数配置单元，每一个参数配置单元对应于一个配置文件。
+ * 它将配置文件中的参数读取并暂存于内存中，并提供对应的调用，以支持程序读取、变更、储存这些参数。
+ */
 public class ConfigurationModule{
 	/** 配置文件的类型 */
 	public static enum Type{

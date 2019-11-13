@@ -6,6 +6,9 @@ import n.baldyoung.FileDataOption.FileDataSaveModule;
 import java.util.concurrent.*;
 import java.util.List;
 
+/***
+ * 用来处理数量未知的工作集合，这是对线程池的二次包装。
+ */
 public class WorkingPoolModule{
 	
 	private ExecutorService service;

@@ -41,7 +41,7 @@ public class Test {
             inputList.add(new FileInputStream(filePathName));
 
         }
-        fdsmList = FileDataSaveModule.getListByInputStreams(inputList, "C:\\Users\\Administrator\\Desktop/test2", ".jpg");
+        fdsmList = FileDataSaveModule.getListByInputStreams(inputList, "C:\\Users\\Administrator\\Desktop/testarea/", ".jpg");
         out.println("FileDataSaveModule test action is start ...");
         for(FileDataSaveModule cell : fdsmList){
             out.println("save file("+cell.getPathName()+"):"+cell.save());

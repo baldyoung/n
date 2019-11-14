@@ -6,6 +6,17 @@ package n.baldyoung.Encryption;
  */
 public class EncryptionModule {
 
+    private String secretKey;
+    public EncryptionModule(String tSecretKey){
+        this.secretKey = tSecretKey;
+    }
+    public String encrypt(String target){
+        return null;
+    }
+    public static String encryptStringWithString(String target, String secretKey){
+        int i, j;
+        return null;
+    }
 
 
 

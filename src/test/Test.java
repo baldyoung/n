@@ -1,6 +1,7 @@
 
 
 import n.baldyoung.FileDataOption.FileDataSaveModule;
+import n.baldyoung.SendEmail.SendEmailModule;
 import n.baldyoung.UniqueCode.UniqueCodeModule;
 
 import java.io.FileInputStream;
@@ -10,6 +11,11 @@ import java.util.List;
 
 import static java.lang.System.*;
 
+
+/**
+ * 测试模块
+ * 依赖于：junit.jar(测试版本4.12）、hamcrest-core.jar(测试版本1.3）
+ */
 public class Test {
 
 
@@ -47,5 +53,10 @@ public class Test {
             out.println("save file("+cell.getPathName()+"):"+cell.save());
         }
         out.println("test is end");
+    }
+
+    @org.junit.Test
+    public void run4() throws Exception {
+        SendEmailModule.test();
     }
 }

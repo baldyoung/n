@@ -4,6 +4,9 @@ import n.baldyoung.FileDataOption.FileDataSaveModule;
 import n.baldyoung.SendEmail.SendEmailModule;
 import n.baldyoung.UniqueCode.UniqueCodeModule;
 
+import javax.mail.Address;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -57,6 +60,21 @@ public class Test {
 
     @org.junit.Test
     public void run4() throws Exception {
-        SendEmailModule.test();
+        String[] addresses = new String[]{"baldyoung@163.com", "791178881@qq.com"};
+        SendEmailModule obj = SendEmailModule.getInstance("baldyoung@126.com", "china123");
+
+        out.println("带附件邮件发送测试");
+        MimeMessage msg = obj.createMessage("Test Email", "<center><h1>test msg</h1></center><div style='width:100%: text-align:center; background:gray; color:green; '>http://baldyoung.com</div>", new String[]{"C:\\Users\\Administrator\\Desktop\\test\\temp1.jpg", "C:\\Users\\Administrator\\Desktop\\test\\temp1.jpg"});
+        obj.insertAddresseeToMsg(msg, addresses);
+        obj.sendMessage(msg);
+
+        out.println("纯文本邮件发送测试");
+        msg = obj.createMessage("纯文本邮件测试", "纯文本内容");
+        obj.insertAddresseeToMsg(msg, addresses);
+        obj.sendMessage(msg);
+
+        out.println("邮件默认发送测试");
+        msg = obj.createMessage("默认邮件", "默认邮件用户是发送者本身");
+        obj.sendMessage(msg);
     }
 }

@@ -1,92 +1,179 @@
 package n.baldyoung.SendEmail;
 
 
-import javax.mail.Message;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+import javax.mail.*;
+import javax.mail.internet.*;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Properties;
-import javax.mail.internet.AddressException;
-import javax.mail.MessagingException;
+
 /**
  * 邮件发送模块，提供邮件发送服务。
+ * 支持发送带文本、附件的邮件（可以通过网络路径实现图片添加需求）
  * 依赖：javax.mail.jar
+ * @author baldyoung
  */
+
+
 public class SendEmailModule {
 
-    //发件人地址
-    //public static String senderAddress = "hr_meichuanqiuku@aliyun.com";
-    public static String senderAddress = "baldyoung@126.com";
-    //收件人地址
-    public static String recipientAddress = "baldyoung@163.com";
-    //发件人账户名
-    //public static String senderAccount = "hr_meichuanqiuku@aliyun.com";
-    public static String senderAccount = "baldyoung@126.com";
-    //发件人账户密码
-    public static String senderPassword = "china123";
+    // 发件人地址
+    private String senderAddress;
+    // 发件人账户名
+    private String senderAccount;
+    // 发件人账户密码
+    private String senderPassword;
+    // 用于邮件发送的session对象
+    public Session session;
 
-    public static void test() throws Exception {
-        //1、连接邮件服务器的参数配置
+    /**
+     * 私有的构造函数
+     * @param sAddress
+     * @param sAccount
+     * @param sPassword
+     */
+    private SendEmailModule (String sAddress, String sAccount, String sPassword) {
+        this.senderAddress = sAddress;
+        this.senderAccount = sAccount;
+        this.senderPassword = sPassword;
+    }
+
+    /**
+     * 获取邮件发送模块的实例
+     * @param sAccount
+     * @param sPassword
+     * @return
+     */
+    public static SendEmailModule getInstance(String sAccount, String sPassword) throws Exception {
+        SendEmailModule obj = new SendEmailModule(sAccount, sAccount, sPassword);
+        obj.session = Session.getInstance(obj.getDefaultPropertis());
+        if (null == obj.session) throw new Exception("创建session失败");
+        return obj;
+    }
+
+    /**
+     * 获取连接邮件服务器的默认参数设置,需要提前配置好正确的发件人地址。
+     * @return
+     */
+    public Properties getDefaultPropertis() {
         Properties props = new Properties();
-        //设置用户的认证方式
+        // 设置用户认证方式
         props.setProperty("mail.smtp.auth", "true");
-        //设置传输协议
+        // 设置传输协议
         props.setProperty("mail.transport.protocol", "smtp");
-        //设置发件人的SMTP服务器地址
-        props.setProperty("mail.smtp.host", "smtp.126.com");
-        //2、创建定义整个应用程序所需的环境信息的 Session 对象
-        Session session = Session.getInstance(props);
-        //设置调试信息在控制台打印出来
-        //session.setDebug(true);
-        //3、创建邮件的实例对象
-        Message msg = getMimeMessage(session);
-        //4、根据session对象获取邮件传输对象Transport
-        Transport transport = session.getTransport();
-        //设置发件人的账户名和密码
-        transport.connect(senderAccount, senderPassword);
-        //发送邮件，并发送到所有收件人地址，message.getAllRecipients() 获取到的是在创建邮件对象时添加的所有收件人, 抄送人, 密送人
-        transport.sendMessage(msg,msg.getAllRecipients());
-
-        //如果只想发送给指定的人，可以如下写法
-        //transport.sendMessage(msg, new Address[]{new InternetAddress("xxx@qq.com")});
-
-        //5、关闭邮件连接
+        // 设置smtp邮件服务器地址
+        String serviceAddress = null;
+        if (null != this.senderAddress) {
+           serviceAddress = this.senderAddress.substring(this.senderAddress.lastIndexOf("@") + 1, this.senderAddress.lastIndexOf("."));
+        }
+        StringBuilder builder = new StringBuilder();
+        builder.append("smtp.");
+        builder.append(serviceAddress);
+        builder.append(".com");
+        props.setProperty("mail.smtp.host", builder.toString());
+        return props;
+    }
+    /**
+     * 将给定邮件发送给指定的接收者集合
+     * @param msg
+     * @param target
+     * @throws MessagingException
+     */
+    private void sendMessageTo(Message msg, Address[] target) throws MessagingException {
+        Transport transport = this.session.getTransport();
+        transport.connect(this.senderAccount, this.senderPassword);
+        transport.sendMessage(msg, target);
         transport.close();
     }
 
     /**
-     * 获得创建一封邮件的实例对象
-     * @param session
+     * 创建带有附件的邮件实例，附件的指定通过文件路径来实现。同时邮件也带有文本内容。
+     *
+     * @param title
+     * @param content
+     * @param filePathNames
+     * @param sendDate
      * @return
      * @throws MessagingException
-     * @throws AddressException
+     * @throws UnsupportedEncodingException
      */
-    public static MimeMessage getMimeMessage(Session session) throws Exception{
-        //创建一封邮件的实例对象
-        MimeMessage msg = new MimeMessage(session);
-        //设置发件人地址
-        msg.setFrom(new InternetAddress(senderAddress));
-        /**
-         * 设置收件人地址（可以增加多个收件人、抄送、密送），即下面这一行代码书写多行
-         * MimeMessage.RecipientType.TO:发送
-         * MimeMessage.RecipientType.CC：抄送
-         * MimeMessage.RecipientType.BCC：密送
-         */
-        msg.setRecipient(MimeMessage.RecipientType.TO,new InternetAddress(recipientAddress));
-        //设置邮件主题
-        msg.setSubject("金石民科技有限公司实习生入职offer","UTF-8");
-        //设置邮件正文
-        StringBuilder builder = new StringBuilder();
-        for(int i=0;i<500;i++)
-            builder.append("DEBUG: getProvider() returning javax.mail.Provider[TRANSPORT,smtp,com.sun.mail.smtp.SMTPTransport,Oracle]\n");
-        msg.setContent(builder.toString(), "text/html;charset=UTF-8");
-        //设置邮件的发送时间,默认立即发送
-        msg.setSentDate(new Date());
-
+    public MimeMessage createMessage(String title, String content, String[] filePathNames, Date sendDate) throws MessagingException, UnsupportedEncodingException {
+        // 创建邮件实例
+        MimeMessage msg = new MimeMessage(this.session);
+        // 设置发件人地址
+        msg.setFrom(new InternetAddress(this.senderAddress));
+        // 抄送一份给自己，必须这样，否则如126邮件服务器可能拒绝群发操作
+        msg.setRecipient(MimeMessage.RecipientType.CC,new InternetAddress(this.senderAddress));
+        // 设置邮件主题
+        msg.setSubject(title);
+        // 创建一个混合节点，将下面的节点放入里头
+        MimeMultipart mm = new MimeMultipart();
+        // 打包文本内容
+        // 创建一个节点，用于存储文本内容
+        MimeBodyPart textPart = new MimeBodyPart();
+        textPart.setContent(content, "text/html;charset=UTF-8");
+        mm.addBodyPart(textPart);
+        // 打包附件内容
+        for(String filePathName : filePathNames) {
+            // 创建一个节点，用于存储附件数据
+            MimeBodyPart enclosurePart = new MimeBodyPart();
+            // 读取本地文件
+            DataHandler dataHandler = new DataHandler(new FileDataSource(filePathName));
+            // 将附件数据添加到节点
+            enclosurePart.setDataHandler(dataHandler);
+            // 设置附件的文件名（需要编码）
+            enclosurePart.setFileName(MimeUtility.encodeText(dataHandler.getName()));
+            mm.addBodyPart(enclosurePart);
+        }
+        // 设置为混合关系
+        mm.setSubType("mixed");
+        msg.setContent(mm);
+        // 设置发送时间
+        msg.setSentDate(sendDate);
         return msg;
+    }
+    public MimeMessage createMessage(String title, String content, String[] filePathNames) throws MessagingException, UnsupportedEncodingException{
+        return createMessage(title, content, filePathNames, new Date());
+    }
+    /**
+     * 创建纯文本邮件实例，设置标题并填充要发送的文本内容。
+     * 其实内容也可以是html标签，一般的邮件客户端都支持渲染html标签。这也意味着，这个邮件未必就是纯文本的，可以通过添加网络图片路径来实现添加图片的效果。
+     * @param title
+     * @param content
+     * @return
+     * @throws MessagingException
+     * @throws UnsupportedEncodingException
+     */
+    public MimeMessage createMessage(String title, String content) throws MessagingException, UnsupportedEncodingException {
+        return createMessage(title, content, new String[]{});
+    }
+
+
+    /**
+     * 为给定的邮件实例添加接收者
+     * @param msg
+     * @param userAddresses
+     * @throws MessagingException
+     */
+    public void insertAddresseeToMsg(Message msg, String[] userAddresses) throws MessagingException {
+        Address[] addresses = new Address[userAddresses.length];
+        for(int i = 0; i < userAddresses.length; i++) {
+            addresses[i] = new InternetAddress(userAddresses[i]);
+        }
+        msg.addRecipients(MimeMessage.RecipientType.TO, addresses);
+    }
+
+    /**
+     * 将给定的邮件实例发送出去
+     * @param msg
+     * @throws MessagingException
+     */
+    public void sendMessage(Message msg) throws MessagingException {
+        sendMessageTo(msg, msg.getAllRecipients());
     }
 
 
 }
+

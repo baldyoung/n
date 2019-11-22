@@ -1,5 +1,6 @@
 
 
+import n.baldyoung.Encryption.EncryptionModule;
 import n.baldyoung.FileDataOption.FileDataSaveModule;
 import n.baldyoung.SendEmail.SendEmailModule;
 import n.baldyoung.UniqueCode.UniqueCodeModule;
@@ -76,5 +77,38 @@ public class Test {
         out.println("邮件默认发送测试");
         msg = obj.createMessage("默认邮件", "默认邮件用户是发送者本身");
         obj.sendMessage(msg);
+    }
+
+    @org.junit.Test
+    public void run5() {
+        EncryptionModule obj = EncryptionModule.getInstance("我的玛雅");
+        EncryptionModule obj2 = EncryptionModule.getInstance("我的玛雅2");
+        String testStr = "中午吃什么呢？楼下的猫旁边的便利店不错！";
+        byte[] targetData = testStr.getBytes();
+        out.println("\nsourceData:");
+        for(byte temp : targetData) {
+            out.print(temp+" ");
+        }
+        targetData = obj.encrypt(testStr.getBytes());
+        out.println("\ntargetData:");
+        for(byte temp : targetData) {
+            out.print(temp+" ");
+        }
+        // --------------------------------------------------------------- 解密尝试
+        // ---------------------------------------- 错误密码
+        byte[] targetData2 = obj2.decode(targetData);
+        out.println("\ndecodeData（错误的密码）:");
+        for(byte temp : targetData2) {
+            out.print(temp+" ");
+        }
+        out.println("\nsourceStr:"+new String(targetData2));
+        // ----------------------------------------- 正确密码
+        byte[] targetData3 = obj.decode(targetData);
+        out.println("\ndecodeData（正确的密码）:");
+        for(byte temp : targetData3) {
+            out.print(temp+" ");
+        }
+        out.println("\nsourceStr:"+new String(targetData3));
+
     }
 }

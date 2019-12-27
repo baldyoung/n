@@ -1,20 +1,22 @@
 
 
+import n.baldyoung.DateTimeOption.DateStringOption;
 import n.baldyoung.Encryption.EncryptionModule;
 import n.baldyoung.FileDataOption.FileDataSaveModule;
 import n.baldyoung.SendEmail.SendEmailModule;
 import n.baldyoung.UniqueCode.UniqueCodeModule;
 
-import javax.mail.Address;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 import static java.lang.System.*;
-
+import static n.baldyoung.DateTimeOption.DateStringOption.*;
 
 /**
  * 测试模块
@@ -23,38 +25,38 @@ import static java.lang.System.*;
 public class Test {
 
 
-
     @org.junit.Test
-    public void run1(){
+    public void run1() {
 
-        for(int i=0;i<100;i++){
+        for (int i = 0; i < 100; i++) {
             long a = System.nanoTime();
             long b = System.nanoTime();
-            if(a == b) out.println("warning:"+a+"   "+b);
+            if (a == b) out.println("warning:" + a + "   " + b);
         }
     }
+
     @org.junit.Test
-    public void run2(){
+    public void run2() {
         UniqueCodeModule ucm = UniqueCodeModule.getInstance("id", "x");
-        for(int i=0; i<20; i++){
+        for (int i = 0; i < 20; i++) {
             out.println(ucm.getUniqueCode());
         }
         out.println(UniqueCodeModule.getInstance("id", ""));
     }
 
     @org.junit.Test
-    public void run3() throws Exception{
+    public void run3() throws Exception {
         List<FileDataSaveModule> fdsmList;
         List<InputStream> inputList = new LinkedList<>();
-        for(int i=1;i<=5; i++){
-            String filePathName = "C:\\Users\\Administrator\\Desktop"+"\\timg ("+i+").jpg";
+        for (int i = 1; i <= 5; i++) {
+            String filePathName = "C:\\Users\\Administrator\\Desktop" + "\\timg (" + i + ").jpg";
             inputList.add(new FileInputStream(filePathName));
 
         }
         fdsmList = FileDataSaveModule.getListByInputStreams(inputList, "C:\\Users\\Administrator\\Desktop/testarea/", ".jpg");
         out.println("FileDataSaveModule test action is start ...");
-        for(FileDataSaveModule cell : fdsmList){
-            out.println("save file("+cell.getPathName()+"):"+cell.save());
+        for (FileDataSaveModule cell : fdsmList) {
+            out.println("save file(" + cell.getPathName() + "):" + cell.save());
         }
         out.println("test is end");
     }
@@ -86,29 +88,69 @@ public class Test {
         String testStr = "中午吃什么呢？楼下的猫旁边的便利店不错！";
         byte[] targetData = testStr.getBytes();
         out.println("\nsourceData:");
-        for(byte temp : targetData) {
-            out.print(temp+" ");
+        for (byte temp : targetData) {
+            out.print(temp + " ");
         }
         targetData = obj.encrypt(testStr.getBytes());
         out.println("\ntargetData:");
-        for(byte temp : targetData) {
-            out.print(temp+" ");
+        for (byte temp : targetData) {
+            out.print(temp + " ");
         }
         // --------------------------------------------------------------- 解密尝试
         // ---------------------------------------- 错误密码
         byte[] targetData2 = obj2.decode(targetData);
         out.println("\ndecodeData（错误的密码）:");
-        for(byte temp : targetData2) {
-            out.print(temp+" ");
+        for (byte temp : targetData2) {
+            out.print(temp + " ");
         }
-        out.println("\nsourceStr:"+new String(targetData2));
+        out.println("\nsourceStr:" + new String(targetData2));
         // ----------------------------------------- 正确密码
         byte[] targetData3 = obj.decode(targetData);
         out.println("\ndecodeData（正确的密码）:");
-        for(byte temp : targetData3) {
-            out.print(temp+" ");
+        for (byte temp : targetData3) {
+            out.print(temp + " ");
         }
-        out.println("\nsourceStr:"+new String(targetData3));
+        out.println("\nsourceStr:" + new String(targetData3));
 
     }
+
+    @org.junit.Test
+    public void run6() throws  Exception {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+        String dateStr = simpleDateFormat.format(new Date());
+        out.println(dateStr);
+        Date date = simpleDateFormat.parse("2019-12-26 00:00:00");
+        //date = DateStringOption.plusDay(date, -1);
+        out.println(simpleDateFormat.format(date));
+        //out.println(DateStringOption.dayOfMonth(date));
+    }
+
+    @org.junit.Test
+    public void run7() throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        out.println(calendar.get(Calendar.DAY_OF_MONTH)+","+calendar.get(Calendar.MONDAY)+", "+calendar.get(Calendar.YEAR));
+        out.println(calendar.get(Calendar.HOUR)+", "+calendar.get(Calendar.MINUTE)+", "+calendar.get(Calendar.SECOND));
+
+        Date date = parseDate("2019-12-32 25:00:00");
+        out.println(defaultFormat(date));
+
+        for(int i=0; false && i<10000; i++) {
+            new Thread(() -> {
+                for(int j=0; j<30; j++) {
+                    //out.println("->");
+                    try {
+                        getYearOfDate(new Date());
+                        getMonthOfDate(new Date());
+                        getDayOfDate(new Date());
+                    }catch (Exception e) {
+                        out.println(e);
+                    }
+                }
+            }).start();
+        }
+
+
+    }
+
+
 }

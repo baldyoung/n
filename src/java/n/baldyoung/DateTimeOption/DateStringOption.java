@@ -19,9 +19,12 @@ import static java.lang.System.out;
  */
 public class DateStringOption {
     private static final String DEFAULT_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final String ZERO_FORMAT = "yyyy-MM-dd 00:00:00";
     private static final ThreadLocal<DateFormat> threadLocalDateFormats = ThreadLocal.withInitial(() ->
         new SimpleDateFormat(DEFAULT_FORMAT)
     );
+    private static final DateFormat zeroDateFormat = new SimpleDateFormat(ZERO_FORMAT);
+
     /**（线程安全）
      * 不推荐使用
      * @param date
@@ -40,6 +43,7 @@ public class DateStringOption {
     public static String defaultFormat(Date date) {
         return threadLocalDateFormats.get().format(date);
     }
+
     public static String getYearOfDate(Date date) {
         String dateString = defaultFormat(date);
         return dateString.split("-")[0];
@@ -71,8 +75,27 @@ public class DateStringOption {
      * @return
      * @throws ParseException
      */
-    public static Date parseDate(String dateString) throws ParseException {
-        return threadLocalDateFormats.get().parse(dateString);
+    public static Date parseDate(String dateString) {
+        try {
+            return threadLocalDateFormats.get().parse(dateString);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    /**（线程安全）
+     * 将指定时间转换为零点时间
+     * @param date
+     * @return
+     */
+    public static Date getZeroDate(Date date) {
+        synchronized (zeroDateFormat) {
+            try {
+                return zeroDateFormat.parse(zeroDateFormat.format(date));
+            } catch (ParseException e) {
+                return null;
+            }
+        }
     }
 
 

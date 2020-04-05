@@ -63,8 +63,8 @@ public class Test {
 
     @org.junit.Test
     public void run4() throws Exception {
-        String[] addresses = new String[]{"baldyoung@163.com", "791178881@qq.com"};
-        SendEmailModule obj = SendEmailModule.getInstance("baldyoung@126.com", "china123");
+        String[] addresses = new String[]{"*****@163.com", "*******@qq.com"};
+        SendEmailModule obj = SendEmailModule.getInstance("emailAccount@126.com", "password");
 
         out.println("带附件邮件发送测试");
         MimeMessage msg = obj.createMessage("Test Email", "<center><h1>test msg</h1></center><div style='width:100%: text-align:center; background:gray; color:green; '>http://baldyoung.com</div>", new String[]{"C:\\Users\\Administrator\\Desktop\\test\\temp1.jpg", "C:\\Users\\Administrator\\Desktop\\test\\temp1.jpg"});

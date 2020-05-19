@@ -3,6 +3,7 @@
 import n.baldyoung.DateTimeOption.DateStringOption;
 import n.baldyoung.Encryption.EncryptionModule;
 import n.baldyoung.FileDataOption.FileDataSaveModule;
+import n.baldyoung.RandomNumber.RandomStringModule;
 import n.baldyoung.SendEmail.SendEmailModule;
 import n.baldyoung.UniqueCode.UniqueCodeModule;
 
@@ -148,8 +149,13 @@ public class Test {
                 }
             }).start();
         }
-
-
+    }
+    @org.junit.Test
+    public void runRandomStringModule() {
+        for (int i=0; i<30; i++) {
+            String code = RandomStringModule.getRandomString(12);
+            System.out.println(code);
+        }
     }
 
 

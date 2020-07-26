@@ -1,15 +1,19 @@
 
 
+import com.google.zxing.WriterException;
 import n.baldyoung.DateTimeOption.DateStringOption;
 import n.baldyoung.Encryption.EncryptionModule;
 import n.baldyoung.FileDataOption.FileDataSaveModule;
+import n.baldyoung.QRcode.QRcodeModule;
 import n.baldyoung.RandomNumber.RandomStringModule;
 import n.baldyoung.SendEmail.SendEmailModule;
 import n.baldyoung.UniqueCode.UniqueCodeModule;
+import n.baldyoung.UtilityClass.UtilityClassModule;
 
 import javax.mail.internet.MimeMessage;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.SocketException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -156,6 +160,17 @@ public class Test {
             String code = RandomStringModule.getRandomString(12);
             System.out.println(code);
         }
+    }
+    @org.junit.Test
+    public void runQRcodeModule() throws Exception {
+        FileInputStream fileInputStream = new FileInputStream("d:/1.jpg");
+        BufferedImage bufferedImage = QRcodeModule.createWithLogoAndText("baldyoung.com", fileInputStream, "baldyoung");
+        QRcodeModule.saveBufferedImageAsFile(bufferedImage, "d:/tempCode.jpg");
+    }
+    @org.junit.Test
+    public void runUtilityClass() throws SocketException {
+        String ip = UtilityClassModule.getLocalIpv4Address();
+        System.out.println(ip);
     }
 
 

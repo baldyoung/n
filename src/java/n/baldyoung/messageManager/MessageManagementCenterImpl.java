@@ -10,13 +10,10 @@ import java.util.concurrent.TimeUnit;
  * 消息调用中心的实现类
  */
 public class MessageManagementCenterImpl {
-    /**
-     * 当前调度中心的名称
-     */
+    // 当前调度中心的名称
     private String name;
 
-    // private MessageDao messageDao;
-
+    // 已注册的控制单元
     private Map<String, MessageOptionUnitImpl> optionUnitMap;
 
     // 线程池
@@ -61,31 +58,6 @@ public class MessageManagementCenterImpl {
     }
 
     /**
-     * 提交消息集到调动中心
-     * @param messageCellList
-     * @param isAsyn
-     */
-    public void pushMessage(List<MessageCell> messageCellList, boolean isAsyn) {
-        if (isAsyn) {
-            // 异步执行发送任务
-            threadPoolExecutor.submit(() -> {
-                sendMessage(messageCellList);
-            });
-            return;
-        }
-        // 同步执行发送任务
-        sendMessage(messageCellList);
-    }
-
-    public List<MessageCell> pullUnreadMessage() {
-        return null;
-    }
-
-    public List<MessageCell> pullMessage() {
-        return null;
-    }
-
-    /**
      * 获取一个调度中心的实例
      * @param name
      * @return
@@ -117,4 +89,46 @@ public class MessageManagementCenterImpl {
         optionUnitMap.put(unitId, messageOptionUnit);
         return messageOptionUnit;
     }
+
+    /**
+     * 将指导编号的控制器从控制中心注销
+     * @param unitId
+     */
+    public void destroyOptionUnit(String unitId) {
+        optionUnitMap.remove(unitId);
+    }
+
+    /**
+     * 提交消息集到调动中心
+     * @param messageCellList
+     * @param isAsyn
+     */
+    public void submitMessage(List<MessageCell> messageCellList, boolean isAsyn) {
+        if (isAsyn) {
+            // 异步执行发送任务
+            threadPoolExecutor.submit(() -> {
+                sendMessage(messageCellList);
+            });
+            return;
+        }
+        // 同步执行发送任务
+        sendMessage(messageCellList);
+    }
+
+    /**
+     * 获取指定控制器下所有未读的消息
+     * @return
+     */
+    public List<MessageCell> pullUnreadMessage(String unitId) {
+        return null;
+    }
+
+    /**
+     * 获取指定控制器下所有的消息
+     * @return
+     */
+    public List<MessageCell> pullMessage(String unitId, int startIndex, int size) {
+        return null;
+    }
+
 }

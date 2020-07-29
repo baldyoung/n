@@ -179,21 +179,17 @@ public class Test {
         System.out.println("消息调度中心已创建");
         messageManagementCenter.registerOptionUnit("kkk");
         System.out.println("消费者控制器已注册");
-        for (int i=0; i<2; i++) {
+        for (int i=0; i<10; i++) {
             String id = "THREAD-" + threadName + " UNIT-" + i;
             MessageOptionUnitImpl optionUnit = messageManagementCenter.registerOptionUnit(id);
             List<MessageCell> list = new ArrayList(20);
             for (int j=0; j<20; j++) {
                 MessageCell messageCell = new MessageCell();
                 messageCell.setReceiverId("kkk");
-                messageCell.setContent("THREAD-" + threadName + "content(" + j + ") from UNIT-" + i);
+                messageCell.setContent("THREAD-" + threadName + " content(" + j + ") from UNIT-" + i);
                 list.add(messageCell);
             }
-            if (i == 0) {
-                optionUnit.pushMessage(list);
-            } else {
-                optionUnit.pushMessageAsynchronously(list);
-            }
+            optionUnit.pushMessageAsynchronously(list);
         }
     }
     @org.junit.Test
@@ -206,7 +202,7 @@ public class Test {
                 System.out.println(e.getMessage());
             }
         }).start();
-        Thread.sleep(3000);
+        Thread.sleep(10000);
 
     }
 

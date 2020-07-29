@@ -25,11 +25,19 @@ public interface MessageOptionUnit {
     /**
      * 同步未读消息
      */
-    List<MessageCell> pullUnreadMessage(int startIndex, int size);
+    List<MessageCell> pullUnreadMessage();
+
+
 
     /**
      * 修改指定消息的状态
      * @return
      */
     boolean changeMessageStatus(List<MessageCell> messageCellList);
+
+    /**
+     * 当收到消息时的调用
+     * @param messageCellList
+     */
+    void onReceiveMessage(List<MessageCell> messageCellList);
 }

@@ -62,6 +62,10 @@ public class MessageOptionUnitImpl {
     }
 
     public void onReceiveMessage(List<MessageCell> messageCellList) {
-
+        Thread thread = Thread.currentThread();
+        System.out.println(thread.isDaemon());
+        for(MessageCell cell : messageCellList) {
+            System.out.println(cell.getContent());
+        }
     }
 }

@@ -9,16 +9,16 @@ import n.baldyoung.RandomNumber.RandomStringModule;
 import n.baldyoung.SendEmail.SendEmailModule;
 import n.baldyoung.UniqueCode.UniqueCodeModule;
 import n.baldyoung.UtilityClass.UtilityClassModule;
+import n.baldyoung.messageManager.MessageCell;
+import n.baldyoung.messageManager.MessageManagementCenterImpl;
+import n.baldyoung.messageManager.MessageOptionUnitImpl;
 
 import javax.mail.internet.MimeMessage;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.SocketException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static java.lang.System.*;
 import static n.baldyoung.DateTimeOption.DateStringOption.*;
@@ -173,5 +173,41 @@ public class Test {
         System.out.println(ip);
     }
 
+    private void messageManagerTestRun(String threadName) throws Exception {
+        System.out.println("正在尝试创建消息调度中心");
+        MessageManagementCenterImpl messageManagementCenter = MessageManagementCenterImpl.getInstance("test");
+        System.out.println("消息调度中心已创建");
+        messageManagementCenter.registerOptionUnit("kkk");
+        System.out.println("消费者控制器已注册");
+        for (int i=0; i<2; i++) {
+            String id = "THREAD-" + threadName + " UNIT-" + i;
+            MessageOptionUnitImpl optionUnit = messageManagementCenter.registerOptionUnit(id);
+            List<MessageCell> list = new ArrayList(20);
+            for (int j=0; j<20; j++) {
+                MessageCell messageCell = new MessageCell();
+                messageCell.setReceiverId("kkk");
+                messageCell.setContent("THREAD-" + threadName + "content(" + j + ") from UNIT-" + i);
+                list.add(messageCell);
+            }
+            if (i == 0) {
+                optionUnit.pushMessage(list);
+            } else {
+                optionUnit.pushMessageAsynchronously(list);
+            }
+        }
+    }
+    @org.junit.Test
+    public void runMessageManager() throws Exception {
+        new Thread(()->{
+            System.out.println("线程正常输出 - 标识");
+            try {
+                messageManagerTestRun("kk");
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }).start();
+        Thread.sleep(3000);
+
+    }
 
 }
